@@ -1,0 +1,10 @@
+/build/
+/.gradle/
+/.idea/
+/.git/
+/gradle/
+/solution/
+settings.gradle
+gradle*
+.DS_Store
+*.pptx
