@@ -31,6 +31,9 @@ public class TicTacToe {
      */
     public boolean isValid(int location) {
         // TODO: add code here
+        if (location >= 0 && location <= 8) {
+            return true;
+        }
         return false;
     }
 
@@ -42,7 +45,12 @@ public class TicTacToe {
      */
     public boolean isEmpty(int location) {
         // TODO: add code here
-        return false;
+        if (!isValid(location)) {
+            throw new IllegalArgumentException("Invalid location");
+        }
+        int row = location / board[0].length;
+        int col = location % board[0].length;
+        return board[row][col] == null;
     }
 
     /**
@@ -52,7 +60,7 @@ public class TicTacToe {
      */
     public int movesRemaining() {
         // TODO: add code here
-        return 0;
+        return board.length * board[0].length - numOfMoves;
     }
 
     /**
@@ -63,7 +71,12 @@ public class TicTacToe {
      */
     public GamePiece getPiece(int location) {
         // TODO: add code here
-        return null;
+        if (!isValid(location)) {
+            throw new IllegalArgumentException("Invalid location");
+        }
+        int row = location / board[0].length;
+        int col = location % board[0].length;
+        return new GamePiece(board[row][col]);
     }
 
     /**
@@ -78,8 +91,28 @@ public class TicTacToe {
                 {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, // vertical winning combinations
                 {0, 4, 8}, {2, 4, 6}             // diagonal winning combinations
         };
-
         // TODO: add code here
+
+        for (int[] combo : combos) {
+            GamePiece firstPiece = board[combo[0] / board.length][combo[0] % board.length];
+            if (firstPiece == null) {
+                continue;
+            }
+
+            boolean hasWinner = true;
+            for (int i = 1; i < combo.length; i++) {
+                GamePiece currentPiece = board[combo[i] / board.length][combo[i] % board.length];
+                if (currentPiece == null || !currentPiece.equals(firstPiece)) {
+                    hasWinner = false;
+                    break;
+                }
+            }
+
+            if (hasWinner) {
+                winner = new GamePiece(firstPiece);
+                break;
+            }
+        }
 
         return winner;
     }
@@ -114,6 +147,11 @@ public class TicTacToe {
     public void clear() {
         // set all elements of 2d array to null
         // TODO: add code here
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                board[i][j] = null;
+            }
+        }
     }
 
     /**
@@ -122,8 +160,25 @@ public class TicTacToe {
      */
     @Override
     public String toString() {
-        String s = "";
+
         // TODO: add code here
-        return s;
+
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < board.length; i++) {
+            s.append("+---+---+---+\n");
+            for (int j = 0; j < board[0].length; j++) {
+                s.append("| ");
+                int location = i * board[0].length + j;
+                if (isEmpty(location)) {
+                    s.append(location);
+                } else {
+                    s.append(board[i][j]);
+                }
+                s.append(" ");
+            }
+            s.append("|\n");
+        }
+        s.append("+---+---+---+\n");
+        return s.toString();
     }
 }
